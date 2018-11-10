@@ -1,0 +1,16 @@
+$colors: red, orange, yellow, green, blue, purple;
+#container {
+  display: flex;
+  width: 50%;
+  justify-content: center;
+  margin: 0 auto;
+  background: lighten(nth($colors, random(length($colors))), 20%);
+
+  #scss {
+    color: darken(nth($colors, random(length($colors))), 20%);
+
+    &:hover {
+      color: blue;
+    }
+  }
+}
