@@ -10,12 +10,13 @@ const CleanWebpackPlugin = require("clean-webpack-plugin");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 const WebpackBar = require("Webpackbar");
 const devMode = process.env.NODE_ENV !== "production";
-const loaders = ["css-loader", "sass-loader", "style-loader"];
+const loaders = ["style-loader", "css-loader", "sass-loader"];
 module.exports = {
-  entry: { main: "./src/index.js" },
+  entry: { index: "./src/index.js" },
   output: {
     path: path.resolve(__dirname, "build"),
-    filename: "[name].[hash].js"
+    publicPath: "./",
+    filename: "[name].js"
   },
   module: {
     rules: [
@@ -45,10 +46,21 @@ module.exports = {
             loader: "file-loader",
             options: {
               name: "[name].[ext]",
-              outputPath: "./fonts/"
+              outputPath: "./fonts"
             }
           }
         ]
+      },
+      {
+        test: /\.(jpe?g|png|gif)$/,
+        use: [{
+          loader: "file-loader",
+          options: {
+            name: "[name].[ext]",
+            outputPath: "./img/",
+            useRelativePath: process.env.NODE_ENV === "production"
+          }
+        }]
       }
     ]
   },
@@ -60,13 +72,20 @@ module.exports = {
   plugins: [
     devMode ? new CleanWebpackPlugin([""]) : new CleanWebpackPlugin(["build"]),
     new MiniCssExtractPlugin({
-      filename: "style.[hash].css"
+      filename: "[name].css"
     }),
     new CopyWebpackPlugin([
       {
         from: "src/fonts",
         to: "./fonts/[name].[ext]",
         test: /\.(woff(2)?|ttf|eot|svg|otf)(\?v=\d+\.\d+\.\d+)?$/
+      }
+    ]),
+    new CopyWebpackPlugin([
+      {
+        from: "src/img",
+        to: "./img/[name].[ext]",
+        test: /\.(jpe?g|png|gif)$/
       }
     ]),
     new HtmlWebpackPlugin({

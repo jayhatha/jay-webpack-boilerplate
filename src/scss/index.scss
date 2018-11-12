@@ -1,16 +1,38 @@
-$colors: red, orange, yellow, green, blue, purple;
+@font-face {
+	font-family: 'Open Sans';
+	src:url('../fonts/OpenSans-Regular.ttf');
+	font-weight: normal;
+	font-display: swap;
+}
+
+$colors: #CFD4C5, #EECFD4, #EFB9CB, #E6ADEC, #C287E8;
 #container {
   display: flex;
-  width: 50%;
-  justify-content: center;
+  width: 40%;
+  justify-content: space-around;
+  align-items: center;
   margin: 0 auto;
-  background: lighten(nth($colors, random(length($colors))), 20%);
-
-  #scss {
-    color: darken(nth($colors, random(length($colors))), 20%);
+  background: darken(nth($colors, random(length($colors))), 0%);
+}
+#logo {
+  display: inline-block;
+  img {
+    width: 120px;
+    height: 120px;
+    margin:-10px 0 0 -10px;
+    -webkit-animation:spin 20s linear infinite;
+    -moz-animation:spin 20s linear infinite;
+    animation:spin 20s linear infinite;
+}
+}
+@-moz-keyframes spin { 100% { -moz-transform: rotate(360deg); } }
+@-webkit-keyframes spin { 100% { -webkit-transform: rotate(360deg); } }
+@keyframes spin { 100% { -webkit-transform: rotate(360deg); transform:rotate(360deg); } }
+#scss {
+    font-family: 'Open Sans', sans-serif;
+    color: lighten(nth($colors, random(length($colors))), 30%);
 
     &:hover {
-      color: blue;
+      color: darken(nth($colors, random(length($colors))), 30%);
     }
   }
-}
