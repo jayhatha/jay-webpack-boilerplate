@@ -7,23 +7,15 @@ const webpack = require("webpack");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const CleanWebpackPlugin = require("clean-webpack-plugin");
-const devMode = process.env.NODE_ENV !== "production";
 const CopyWebpackPlugin = require("copy-webpack-plugin");
-const html = ["index"];
-const htmlFiles = html.map(
-  (entryName) =>
-    new HtmlWebpackPlugin({
-      inject: true,
-      chunks: [entryName],
-      filename: `${entryName}.html`,
-      template: `./src/${entryName}.html`
-    })
-);
-const loaders = ["style-loader", "css-loader", "sass-loader"];
-
+const WebpackBar = require("Webpackbar");
+const devMode = process.env.NODE_ENV !== "production";
+const loaders = ["css-loader", "sass-loader", "style-loader"];
 module.exports = {
-  entry: {
-    index: "./src/js/index.js"
+  entry: { main: "./src/index.js" },
+  output: {
+    path: path.resolve(__dirname, "build"),
+    filename: "[name].[hash].js"
   },
   module: {
     rules: [
@@ -35,9 +27,11 @@ module.exports = {
         }
       },
       {
-        test: /\.scss$/,
-        use:
-          devMode ? loaders : ["style-loader",
+        test: /\.s[c|a]ss$/,
+        use: devMode
+          ? loaders
+          : [
+            "style-loader",
             MiniCssExtractPlugin.loader,
             "css-loader",
             "postcss-loader",
@@ -59,14 +53,14 @@ module.exports = {
     ]
   },
   devServer: {
-    contentBase: ["./dist", path.join(__dirname, "src")],
+    contentBase: ["./build", path.join(__dirname, "src")],
     watchContentBase: true,
     hot: true
   },
   plugins: [
-    devMode ? new CleanWebpackPlugin([""]) : new CleanWebpackPlugin(["dist"]),
+    devMode ? new CleanWebpackPlugin([""]) : new CleanWebpackPlugin(["build"]),
     new MiniCssExtractPlugin({
-      filename: "css/[name].css"
+      filename: "style.[hash].css"
     }),
     new CopyWebpackPlugin([
       {
@@ -75,12 +69,14 @@ module.exports = {
         test: /\.(woff(2)?|ttf|eot|svg|otf)(\?v=\d+\.\d+\.\d+)?$/
       }
     ]),
+    new HtmlWebpackPlugin({
+      inject: false,
+      hash: true,
+      template: "./src/index.html",
+      filename: "index.html"
+    }),
     new webpack.NamedModulesPlugin(),
-    new webpack.HotModuleReplacementPlugin()
-  ].concat(htmlFiles),
-  output: {
-    path: path.resolve(__dirname, "dist"),
-    publicPath: "/",
-    filename: "scripts/[name].js"
-  }
+    new webpack.HotModuleReplacementPlugin(),
+    new WebpackBar()
+  ]
 };
