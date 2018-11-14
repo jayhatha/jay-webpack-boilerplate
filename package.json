@@ -4,8 +4,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "build": "NODE_ENV=production webpack -p",
-    "dev": "webpack --mode development",
+    "build": "NODE_ENV=production webpack -p --display=minimal",
     "start": "webpack-dev-server --mode development --host 0.0.0.0 --inline --open"
   },
   "dependencies": {

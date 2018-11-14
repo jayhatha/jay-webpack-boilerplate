@@ -15,7 +15,6 @@ module.exports = {
   entry: { index: "./src/index.js" },
   output: {
     path: path.resolve(__dirname, "build"),
-    publicPath: "./",
     filename: "[name].js"
   },
   module: {
@@ -67,10 +66,17 @@ module.exports = {
   devServer: {
     contentBase: ["./build", path.join(__dirname, "src")],
     watchContentBase: true,
-    hot: true
+    hot: true,
+    noInfo: true
   },
   plugins: [
     devMode ? new CleanWebpackPlugin([""]) : new CleanWebpackPlugin(["build"]),
+    new HtmlWebpackPlugin({
+      inject: false,
+      hash: true,
+      template: "./src/index.html",
+      filename: "./index.html"
+    }),
     new MiniCssExtractPlugin({
       filename: "[name].css"
     }),
@@ -88,12 +94,6 @@ module.exports = {
         test: /\.(jpe?g|png|gif)$/
       }
     ]),
-    new HtmlWebpackPlugin({
-      inject: false,
-      hash: true,
-      template: "./src/index.html",
-      filename: "index.html"
-    }),
     new webpack.NamedModulesPlugin(),
     new webpack.HotModuleReplacementPlugin(),
     new WebpackBar()
